@@ -6,10 +6,13 @@ const cookieParser = require('cookie-parser');
 
 const { notFoundHandler, errorHandler } = require('./middlewares/common/errorHandler');
 
+const loginRouter = require('./router/loginRouter');
+const usersRouter = require('./router/userRouter');
+// const inboxRouter = require('./router/inboxRouter');
+const inboxRouter = require('./router/inboxRouter');
+
 const app = express();
 dotenv.config();
-
-
 
 
 // console.log(process.env.APP_NAME);
@@ -19,6 +22,7 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING, {
     useUnifiedTopology: true,
 })
     .then(() => { console.log('DatabaseConnection SuccessFully') })
+    .catch((err) => console.log(err));
 
 
 app.use(express.json());
@@ -28,6 +32,15 @@ app.set('view engine', 'ejs');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser(process.env.COOKIE_SECRET));
+
+
+app.use('/', loginRouter);
+app.use('/users', usersRouter);
+app.use('/inbox', inboxRouter);
+
+
+
+
 
 
 
